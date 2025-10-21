@@ -2,6 +2,4 @@
 
 #include <windows.h>
 
-DWORD WINAPI marker(LPVOID lpParam) {
-
-}
+DWORD WINAPI marker(LPVOID);
