@@ -21,6 +21,7 @@ int main()
 	std::cout << "Enter the number of threads: ";
 	if (!(std::cin >> threadNumber) || threadNumber <= 0) {
 		std::cout << "Invalid thread number";
+		delete[] array;
 		return 0;
 	}
 
@@ -124,5 +125,7 @@ int main()
 			break;
 		}
 	}
+	DeleteCriticalSection(&cs);
+	delete[] array;
 	return 0;
 }
