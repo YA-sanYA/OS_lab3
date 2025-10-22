@@ -16,7 +16,7 @@ DWORD WINAPI marker(LPVOID lpParam) {
     std::vector<int> markedIndices;
     int index, val;
 
-    while (true) {
+    while (TRUE) {
         index = rand() % data->size;
 
         EnterCriticalSection(data->cs);
@@ -36,9 +36,12 @@ DWORD WINAPI marker(LPVOID lpParam) {
             Sleep(TIME_TO_SLEEP);
         }
         else {
-            std::cout << "Thread ordinal number: " << data->id << "\n";
-            std::cout << "Number of marked elements: " << markedIndices.size() << "\n";
-            std::cout << "Array index that impossible to mark: " << index << "\n";
+            EnterCriticalSection(data->cs);
+            std::cout << "Thread ordinal number: " << data->id << "\n"
+                << "Number of marked elements: " << markedIndices.size() << "\n"
+                << "Array index that impossible to mark: " << index << "\n\n"
+                << std::flush;
+            LeaveCriticalSection(data->cs);
             SetEvent(data->hBlockEvent);
 
             HANDLE waitHandles[2] = {data->hContinueEvent, data->hTerminateEvent};

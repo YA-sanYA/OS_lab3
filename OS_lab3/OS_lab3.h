@@ -4,5 +4,8 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
+#include "Threads.h"
+#include "utils.h"
 
 // TODO: установите здесь ссылки на дополнительные заголовки, требующиеся для программы.

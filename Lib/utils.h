@@ -10,4 +10,6 @@ struct ThreadData {
 	HANDLE hBlockEvent;
 	HANDLE hContinueEvent;
 	HANDLE hTerminateEvent;
+
+	bool isActive;
 };
