@@ -1,8 +1,8 @@
 #include "Threads.h"
-#include "utils.h"
 #include <random>
 #include <iostream>
 #include <vector>
+#include <mutex>
 
 const int TIME_TO_SLEEP = 5;
 
@@ -62,4 +62,51 @@ DWORD WINAPI marker(LPVOID lpParam) {
     }
 
     return 0;
+}
+
+void markerThreads(ThreadDataForThreads* data) {
+    std::vector<int> markedIndices;
+    std::mt19937 rng(data->id);
+    std::uniform_int_distribution<int> dist(0, data->size - 1);
+
+    while (true) {
+        int index = dist(rng);
+        int val;
+
+        {
+            std::lock_guard<std::mutex> lock(*data->arrMutex);
+            val = data->arr[index];
+        }
+
+        if (val == 0) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(TIME_TO_SLEEP));
+            std::lock_guard<std::mutex> lock(*data->arrMutex);
+            if (data->arr[index] == 0) {
+                data->arr[index] = data->id;
+                markedIndices.push_back(index);
+            }
+            std::this_thread::sleep_for(std::chrono::milliseconds(TIME_TO_SLEEP));
+        }
+        else {
+            {
+                std::lock_guard<std::mutex> lock(*data->arrMutex);
+                std::cout << "Thread ordinal number: " << data->id << "\n"
+                    << "Number of marked elements: " << markedIndices.size() << "\n"
+                    << "Array index that impossible to mark: " << index << "\n\n";
+            }
+
+            data->blocked = true;
+            std::unique_lock<std::mutex> lock(*data->arrMutex);
+            data->cv.wait(lock, [&] { return data->shouldContinue || data->shouldTerminate; });
+
+            if (data->shouldTerminate) {
+                for (int idx : markedIndices)
+                    data->arr[idx] = 0;
+                break;
+            }
+
+            data->shouldContinue = false;
+            data->blocked = false;
+        }
+    }
 }

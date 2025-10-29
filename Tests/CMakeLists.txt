@@ -1,4 +1,4 @@
-add_executable (tests "tests.cpp")
+add_executable (tests "tests.cpp" "testUtils.cpp" "testUtils.h")
 
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)

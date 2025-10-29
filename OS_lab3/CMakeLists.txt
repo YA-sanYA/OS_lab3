@@ -3,7 +3,7 @@
 #
 
 # Добавьте источник в исполняемый файл этого проекта.
-add_executable (OS_lab3 "OS_lab3.cpp" "OS_lab3.h")
+add_executable (OS_lab3 "OS_lab3.cpp" "OS_lab3.h" "OS_lab3_thread.cpp" "OS_lab3_thread.h")
 
 target_link_libraries(OS_lab3 PRIVATE Lib)
 
